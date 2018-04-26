@@ -354,7 +354,7 @@
             email_id,
             password,
             org_password,
-            org_name,
+            org,
             arr = [];
            
         
@@ -544,9 +544,9 @@
                 var div, temp = '<div class="abc-container">';
                 for (var i in profiles) {
                     arr[i] = profiles[i].user_id;
-                    temp += '<div id='+ profiles[i].user_id+' org_name = "'+profiles[i].org_name+'" class="abc">'
+                    temp += '<div id='+ profiles[i].user_id+' org = "'+profiles[i].org+'" class="abc">'
                     temp += ' <div>'
-                    temp += ' <div class="cname">'+profiles[i].org_name+' </div>'
+                    temp += ' <div class="cname">'+profiles[i].org+' </div>'
                     temp += ' <div class="cno"> <img src="https://s3-ap-southeast-1.amazonaws.com/addons-extensions/call-icon.svg" alt="call-icon" alt="" /> <span class="no">'+profiles[i].mobile_number+' </span></div>'
                     temp += ' </div> '
                     temp += ' <div class="align-right"> <img src="https://s3-ap-southeast-1.amazonaws.com/addons-extensions/slider-arrow-right.svg" alt="arrow-right"/></div>'
@@ -569,8 +569,8 @@
                                 
                                 //organization password field
                     userid = $(this).attr("id");
-                    org_name = $(this).attr("org_name");
-                    $(".login .login-sub-sub-heading").show().text(org_name);
+                    org = $(this).attr("org");
+                    $(".login .login-sub-sub-heading").show().text(org);
                     $(".login .sub-sub-heading").hide();
                     });   
                 });
