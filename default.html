@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add-on</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        @import url("https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900");
+        body, .login, .profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            line-height: 1.15;
+            /* 1 */
+            -webkit-text-size-adjust: 100%;
+        /* 2 */
+        }
+
+        html, body, main {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            color: #fff;
+            background-color: #16325b;
+            font-family: 'Roboto', sans-serif;
+            font-size: 100%;
+        }
+
+        button,
+        input {
+            font-family: inherit;
+            font-size: 100%;
+            line-height: 1.15;
+            margin: 0;
+            overflow: visible;
+        }
+
+        header {
+            margin-top: 50.2px;
+        }
+
+        .sub-heading {
+            font-size: 22px;
+            font-weight: 100;
+            color: #ffffff;
+            margin: 34.1px 0 0;
+        }
+
+        .sub-sub-heading {
+            margin: 20px 0 30px;
+        }
+
+        .show-hide-password {
+            position: relative;
+            top: -24px;
+            left: 290px;
+            object-fit: contain;
+            cursor: pointer;
+        }
+
+        .login .sub-sub-heading {
+            min-width: 320px;
+            border-radius: 6px;
+            border: 1px solid #fff;
+            padding: 10px 1px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .login .sub-sub-heading span {
+            padding: 8px 59px;
+        }
+
+        .login .sub-sub-heading span:last-child {
+            color: #54698d;
+            border-radius: 5px;
+            background-color: #ffffff;
+            border: solid 2px #16325c;
+        }
+
+        .login .sub-sub-heading span:first-child {
+            color: #ffffff;
+        }
+
+        .profile .sub-sub-heading {
+            min-width: 320px;
+            border-radius: 5px;
+            border: solid 1px #ffffff;
+            padding: 10px 60px;
+            color: #fff;
+            font-weight: 300;
+        }
+
+        .login-sub-sub-heading {
+            border-radius: 5px;
+            border: solid 1px #ffffff;
+            padding: 10px 60px;
+            color: #fff;
+            margin: 20px 0 30px;
+            font-weight: 300;
+        }
+
+        .button {
+            border: 0;
+            width: 100%;
+            border-radius: 3px;
+            background-color: #5e89c6;
+            color: #fff;
+            margin-top: 40.4px;
+            padding: 12px 0;
+            text-align: center;
+            transition-duration: 0.5s;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .button:hover {
+             background-color: #5175a9;
+        }
+
+        .button.half {
+            width: 47%;
+        }
+
+        .button.back {
+            background-color: #fff;
+            color: #54698d;
+            border: solid 1px #e8edf4;
+        }
+
+        .button.back:hover {
+             background-color: #e8edf4;
+        }
+
+        #password_field, #org_pswd_field {
+             margin-top: 20px;
+        }
+
+        .sign-in, .org-button {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #form, #profiles {
+            width: 390px;
+            max-height: 400px;
+            border-radius: 6px;
+            box-shadow: 0 6px 20px 0 rgba(2, 11, 25, 0.13);
+            background-color: #fff;
+            border: solid 1px #eef2f7;
+            padding: 35.9px 35px 35px 35px;
+            font-size: 14px;
+        }
+
+        #form label, #profiles label {
+            display: block;
+            margin: 10px 0 0;
+            color: #54698d;
+            font-weight: 600px;
+        }
+
+        #form input, #profiles input {
+            width: 100%;
+            padding: 10.4px 0 9.6px 9px;
+            margin: 7px 0 0;
+            border-radius: 3px;
+            background-color: #f9fafc !important;
+            border: solid 1px #e8edf4;
+            color: #16325c !important;
+        }
+
+        #form input:focus, #profiles input:focus {
+            outline: solid 1px #e8edf4;
+        }
+
+        #form input::placeholder, #profiles input::placeholder {
+            color: rgba(84, 105, 141, 0.79);
+        }
+
+        @media screen and (max-width: 500px) {
+        #form, #profiles {
+            width: 80vw;
+        }
+        }
+
+        #profileBack {
+        margin-top: 28px;
+        }
+
+        .abc {
+        padding: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        align-items: center;
+        border-radius: 2px;
+        background-color: #ffffff;
+        border: solid 1px #eef2f7;
+        font-size: 12px;
+        color: #16325c;
+        cursor: pointer;
+        }
+
+        .abc div:first-child {
+        flex: 1;
+        }
+
+        .abc:last-child {
+        margin-bottom: 0px;
+        }
+
+        .cno {
+        margin-top: 10px;
+        }
+
+        .cno img {
+        width: 12px;
+        height: 12px;
+        object-fit: contain;
+        vertical-align: top;
+        margin-right: 4px;
+        }
+
+        .cno .no {
+        font-weight: 300;
+        }
+
+        .abc-container {
+        height: 262px;
+        overflow: auto;
+        }
+
+        .align-right img {
+        width: 15px;
+        height: 15px;
+        object-fit: contain;
+        }
+
+        [hidden] {
+        display: none;
+        }
+
+        .disabled {
+        opacity: 0.4 !important;
+        cursor: not-allowed;
+        }
+
+        .error {
+        text-align: right;
+        color: #f45d5d;
+        margin-top: 4px;
+        font-size: 10px;
+        }
+
+        .errorInput {
+            border: 1px solid red !important;
+        }
+
+        .password_error {
+             margin-top: -10px;
+        }
+
+        footer {
+        font-size: 12px;
+        margin-bottom: 23px;
+        }
+
+        footer .dot {
+        border-radius: 50%;
+        background-color: #fff;
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        position: relative;
+        margin: 0 12px;
+        }
+/*# sourceMappingURL=default.css.map */
+    </style>
+</head>
+    <body>
+        <header>
+            <img src="https://s3-ap-southeast-1.amazonaws.com/addons-extensions/happay-logo-n.svg" alt="happay_logo" border="0">
+        </header>
+        <main>
+            <div class="login">
+                <div class="sub-heading">Sign in to your account</div>
+                <div class="sub-sub-heading">
+                    <span>Mobile</span>
+                    <span>Email</span>
+                </div>
+                <div class="login-sub-sub-heading" hidden></div>
+                <div id="form">
+                    <div id="email_field">
+                        <label for="email_id">Email</label>
+                        <input type="email" id='email_id' placeholder="Enter Email Address" autocomplete="off" >
+                        <br>
+                        <p class="email_error error" style="display:none"></p>
+                    </div>
+
+                    <div id='password_field' hidden>
+                        <label for="password">Password</label>
+                        <input type="password" id='password' placeholder="Enter Password" autocomplete="off" >
+                        <br>
+                        <img class="show-hide-password" src="https://s3-ap-southeast-1.amazonaws.com/addons-extensions/hide-passowrd.svg" alt="show-password">
+                        <p class="password_error error" display="none"></p>
+                    </div>
+
+                    <div id="org_pswd_field" style="display:none">
+                        <label for="password">Password</label>
+                        <input type="password" id='org_password' autocomplete="off">
+                        <br>
+                        <img class="show-hide-password" src="https://s3-ap-southeast-1.amazonaws.com/addons-extensions/hide-passowrd.svg" alt="show-password">
+                        <p class="password_error error" hidden>Check your password</p>
+                    </div>
+                    <button class="button full" type='submit' id="next">NEXT</button>
+                    <div class="sign-in" hidden>
+                        <button type='submit' class="button half back" id="signinBack">BACK</button>
+                        <button type='submit' class="button half" id="sign-in">SIGN IN</button>
+                    </div>
+                    <div class="org-button" hidden>
+                        <button type='submit' class="button half back" id="orgSigninBack">BACK</button>
+                        <button type='submit' class="button half" id="org-sign-in">SIGN IN</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="profile" hidden>
+                <div class="sub-heading">Choose Profile</div>
+                <div class="sub-sub-heading"></div>
+                <div id="profiles"></div>
+            </div>
+
+        </main>
+        <footer>
+            <span>Privacy Policy</span>
+            <div class="dot"></div>
+            <span>Terms of use</span>
+        </footer>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
+        <script>
+        (function(){
+            var allInput = $('#email_id, #password, #org_password'),
+            userid,
+            email_id,
+            password,
+            org_password,
+            org_name,
+            arr = [];
+           
+        
+            $(document).ready(function(){
+                $("#email_id").focus();
+                $('#email_id,#password,#org_password').keypress(function(){
+                    var keycode = (event.keyCode ? event.keyCode : event.which);
+                    if(keycode == 13){//Enter key pressed
+                        if(event.currentTarget.id === 'email_id'){
+                            $('#next').click();
+                        }else if(event.currentTarget.id === 'password'){
+                            $('#sign-in').click();
+                        }else if(event.currentTarget.id === 'org_password'){
+                            $('#org-sign-in').click();
+                        }
+                    }
+                })
+                $(document).on('click','#next',function(e){
+                    e.preventDefault();
+                    email_id = $('#email_id').val();
+                    if(!email_id){
+                        $('.email_error').show().html("Email Field is Mandatory*");
+                        $('#email_id').addClass("errorInput");
+                        return;
+                    }
+
+                    if(!validateEmail()){ return; }
+
+                    $.ajax({
+                        type: 'GET',
+                        url: 'https://v2-prep-api.happay.in/access/v1/fetchauthmode/?user=' + email_id, //checks email_id(user exist or not)
+                        success: function(data) {
+                            $("#password_field").show();
+                            $("#password").focus();
+                            $("#email_id").attr("disabled",true).addClass("disabled")
+                            $("#next").hide();
+                            $(".sign-in").css("display","flex");
+                        },
+                        error:function(a,b,c){
+                            let msg = '';
+                            if(a && a.responseJSON && a.responseJSON.res_str){
+                                msg = a.responseJSON.res_str;
+                            }else if(a && a.status){
+                                msg = showErrorMsg(a.status);
+                            }
+                            $('.email_error').css("display","block").text(msg);
+                            $('#email_id').addClass("errorInput");
+                        }
+                    });
+                });
+                $("#sign-in").click(function(e){
+                    e.preventDefault();
+                    password = $('#password').val();
+                    var login_data = {
+                        'user': email_id,
+                        'password': password
+                    };
+
+                    if(email_id && !password){
+                        $('.password_error').show().html("Password Field is Mandatory*");
+                        $('#password').addClass("errorInput");
+                        return;
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: 'https://v2-prep-api.happay.in/access/v1/login/',
+                        data: login_data,
+                        success: function(data, textStatus, request) {
+                                        $(".login").hide();
+                                        //$("#next").hide();
+                                        $(".profile").css("display","flex");
+                                        $(".profile .sub-sub-heading").text(email_id);
+                                        
+                            if (request.getResponseHeader('HAPPAY-CID')) //checks user have one or multiple organization if only one(HAPPAY-CID will available else not)
+                            {
+                            google.script.run.store_data(request.getResponseHeader('HAPPAY-CID'), request.getResponseHeader('HAPPAY-TOKEN'), data.res_data.details.org_id);
+                            //store HAPPAY-CID and TOKEN to user properties
+                            window.top.close(); //close the window
+                            }
+                            select_orgs(data.res_data.profiles); //else show the list of organization to select one of them.
+                        },
+                        error:function(a,b,c){
+                            let msg = '';
+                            if(a && a.responseJSON && a.responseJSON.res_str){
+                                msg = a.responseJSON.res_str;
+                            }else if(a && a.status){
+                                msg = showErrorMsg(a.status);
+                            }
+                            $('.password_error').css("display","block").text(msg);
+                            $('#password').addClass("errorInput");
+                        }
+                    });
+                })
+                $("#org-sign-in").click(function(e){
+                    e.preventDefault();
+                    org_password = $('#org_password').val(); 
+                    var login_data = {
+                        'user': email_id,
+                        'password': org_password,
+                        'user_id': userid
+                    };
+
+                    if(email_id && !org_password){
+                        $('.password_error').show().html("Org Password Field is Mandatory*");
+                        $('#org_password').addClass("errorInput");
+                        return;
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: 'https://v2-prep-api.happay.in/access/v1/login/', //login API
+                        data: login_data,
+                        success: function(data, textStatus, request) {
+                            $(".login").hide();
+                            //$("#password_field").hide();
+                            //Logger.log(data.res_data.details.org_id);
+                            google.script.run.store_data(request.getResponseHeader('HAPPAY-CID'), request.getResponseHeader('HAPPAY-TOKEN'),data.res_data.details.org_id); //storing token and cid
+                            //setTimeout(google.script.run.cache_data(request.getResponseHeader('HAPPAY-CID'),request.getResponseHeader('HAPPAY-TOKEN')),10000);
+                            window.top.close();
+                        },
+                        error:function(a,b,c){
+                            $('.password_error').css("display","block").text(a.responseJSON.res_str);
+                            $('#org_password').addClass("errorInput");
+                        }
+                    });
+
+                })
+                $("#signinBack").click(function(e){
+                    e.preventDefault();
+                    $("#password_field").hide();
+                    $("#org_pswd_field").hide();
+                    $("#email_id").attr("disabled", false).removeClass("disabled");
+                    $("#next").show();
+                    $(".sign-in").hide();
+                    $("#password").val("");
+                    allInput.removeClass("errorInput");
+                })
+                $("#orgSigninBack").click(function(e){
+                    e.preventDefault();
+                    $(".login").hide();
+                    $(".profile").show();
+                    $("#profileBack").show();
+                    $(".org-button").css('display','none');
+                })
+                $('.show-hide-password').click(function(e){
+                    e.preventDefault();
+                    var src = $(this).attr("src");
+                    if(src == "https://s3-ap-southeast-1.amazonaws.com/addons-extensions/hide-passowrd.svg"){
+                        $(this).attr("src","https://s3-ap-southeast-1.amazonaws.com/addons-extensions/show-password.svg");
+                        $(this).prevAll("input").attr("type","text");
+                    }else{
+                        $(this).attr("src","https://s3-ap-southeast-1.amazonaws.com/addons-extensions/hide-passowrd.svg");
+                        $(this).prevAll("input").attr("type","password");
+                    }
+                });
+                $(document).on('click','#profileBack',function(){
+                    console.log("back");
+                    $(".profile").hide();
+                    $(".login").show();
+                    $("#password_field").show();
+                    $("#org_pswd_field").hide(); 
+                    $(".login-sub-sub-heading").hide();
+                    $(".sub-sub-heading").show();
+                    $(".sign-in").show();
+                    $('#password').val('');
+                })
+                allInput.on('input',function(){
+                    $('.email_error,.password_error').hide();
+                    allInput.removeClass("errorInput");
+                })
+            });
+            
+            function validateEmail(){
+                var atpos = email_id.indexOf("@");
+                    var dotpos = email_id.lastIndexOf(".");
+                    if (atpos<1 || dotpos<atpos+2 || dotpos+2 >= email_id.length) {
+                            $('.email_error').show().text("You've entered an invalid email address");
+                            $('#email_id').addClass("errorInput");
+                            return false;
+                    }
+                return true;
+            }
+            
+            function select_orgs(profiles) { //to select organization
+                event.preventDefault();
+                var div, temp = '<div class="abc-container">';
+                for (var i in profiles) {
+                    arr[i] = profiles[i].user_id;
+                    temp += '<div id='+ profiles[i].user_id+' org_name = "'+profiles[i].org_name+'" class="abc">'
+                    temp += ' <div>'
+                    temp += ' <div class="cname">'+profiles[i].org_name+' </div>'
+                    temp += ' <div class="cno"> <img src="https://s3-ap-southeast-1.amazonaws.com/addons-extensions/call-icon.svg" alt="call-icon" alt="" /> <span class="no">'+profiles[i].mobile_number+' </span></div>'
+                    temp += ' </div> '
+                    temp += ' <div class="align-right"> <img src="https://s3-ap-southeast-1.amazonaws.com/addons-extensions/slider-arrow-right.svg" alt="arrow-right"/></div>'
+                    temp += '</div>'
+                }
+                temp += '</div><button class="button full" id="profileBack" type="button">BACK</button>';
+                $('#profiles').html(temp);
+                    
+                $(document).ready(function() {
+                            
+                    $(".abc").click(function(evt) {
+                        evt.preventDefault();
+                        $(".login").show();
+                        $(".profile").hide();
+                        $("#password_field").hide();
+                        $("#org_pswd_field").show(); 
+                        $("#profileBack").hide();
+                        $(".org-button").css('display','flex');
+                        $(".sign-in").hide();
+                                
+                                //organization password field
+                    userid = $(this).attr("id");
+                    org_name = $(this).attr("org_name");
+                    $(".login .login-sub-sub-heading").show().text(org_name);
+                    $(".login .sub-sub-heading").hide();
+                    });   
+                });
+            }
+         
+            function showErrorMsg(status, obj) {
+                let msg = '';
+                if (status == 404 || status == 0) {
+                        if (!navigator.onLine) 
+                                msg = 'It seems your internet connection is down.Please try to connect to internet firs' +
+                                                't and try again';
+                        else 
+                                msg = 'It seems something wrong with your internet.Please check your internet connectio' +
+                                                'n and try again';
+                        }
+                else if (status == 400) {
+                        msg = (obj && obj.res_str
+                                ? obj.res_str
+                                : 'Sorry to process your request right now.If you are not expecting this please con' +
+                                        'tact care@happay.in');
+                } else if (status == 403) {
+                        msg = 'You are not permitted for this action';
+                } else if (status == 405) {
+                        msg = 'Method Not Allowed';
+                } else if (status == 401) {
+                        // this._clearStorage();
+                        // hashHistory.push('/');
+                        msg = 'Unauthorised';
+                } else if (status == 500) {
+                        msg = 'Sorry to process your request right now.If you are not expecting this please con' +
+                                        'tact care@happay.in';
+                } else {
+                        msg = 'Sorry! Could not process your request currently, please try after some time.';
+                }
+                // console.log(status,msg);
+                return msg;
+            }
+        })();
+        </script>
+    </body>
+</html>
