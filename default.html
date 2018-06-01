@@ -81,15 +81,11 @@
             padding: 8px 59px;
         }
 
-        .login .sub-sub-heading span:last-child {
-            color: #54698d;
+        .login-email-toggle {
+            color: #54698d; 
             border-radius: 5px;
             background-color: #ffffff;
             border: solid 2px #16325c;
-        }
-
-        .login .sub-sub-heading span:first-child {
-            color: #ffffff;
         }
 
         .profile .sub-sub-heading {
@@ -285,6 +281,35 @@
         position: relative;
         margin: 0 12px;
         }
+
+        #wrapper {
+            display: flex;
+        }
+
+        #wrapper #code {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+        #wrapper #mobile {
+            flex: 5
+        }
+
+        #wrapper span{
+            color: #54698d;
+            font-size: 8px;
+            position: relative;
+            top: 22px;
+            left: -25px;
+        }
+
+        #select{
+            opacity: 0;
+            position: absolute;
+            width: 60px;
+            height: 50px;
+        }
+
 /*# sourceMappingURL=default.css.map */
     </style>
 </head>
@@ -297,7 +322,7 @@
                 <div class="sub-heading">Sign in to your account</div>
                 <div class="sub-sub-heading">
                     <span>Mobile</span>
-                    <span>Email</span>
+                    <span class="login-email-toggle">Email</span>
                 </div>
                 <div class="login-sub-sub-heading" hidden></div>
                 <div id="form">
@@ -306,6 +331,19 @@
                         <input type="email" id='email_id' placeholder="Enter Email Address" autocomplete="off" >
                         <br>
                         <p class="email_error error" style="display:none"></p>
+                    </div>
+
+                    <div id="mobile_field" hidden>
+                        <label for="Mobile">Mobile</label>
+                        <select id="select">
+                            
+                        </select>
+                        <div id="wrapper">
+                            <input type="text" id='code' autocomplete="off" value="+91" readonly>
+                            <span>&#x25BC</span> 
+                            <input type="text" id='mobile' placeholder="Enter Mobile Number" autocomplete="off" >
+                        </div>
+                        <p class="mobile_error error" style="display:none"></p>
                     </div>
 
                     <div id='password_field' hidden>
@@ -350,21 +388,82 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js" type="text/javascript"></script>
         <script>
         (function(){
-            var allInput = $('#email_id, #password, #org_password'),
+            var allInput = $('#email_id, #password, #org_password, #mobile'),
+            loginType,
             userid,
             email_id,
+            mobile,
             password,
             org_password,
             org,
-            arr = [];
+            arr = [],
+            countrycode = [],
+            country_code = $('#code').val(),
+            api_url = 'https://v2-prep-api.happay.in/'
            
-        
+            $("#email_id").focus();
             $(document).ready(function(){
-                $("#email_id").focus();
-                $('#email_id,#password,#org_password').keypress(function(){
+                $(document).on('change','#select',function(){
+                    country_code = $('#select').val();
+                    $('#code').val(country_code);
+                })
+                $(document).on('mousedown','#code',function(event){
+                   event.preventDefault();
+                })
+
+                function fetchMobileCode(){
+                    if ( countrycode.length > 0) return;
+                    $.ajax({
+                        type: 'GET',
+                        url: api_url+'access/v1/countrycode/', //checks email_id(user exist or not)
+                        success: function(data) {
+                           countrycode = data.res_data
+                           for(let item of countrycode ) {
+                               let option = new Option(item.country,item.country_code);
+                               document.getElementById("select").appendChild(option);
+                           }
+                        },
+                        error:function(a,b,c){
+                            console.error("country code fetching error");
+                        }
+                    });
+                }
+
+                $(document).on('click','.login .sub-sub-heading',function(event){
+                    var target = event.target;
+                    if ( target.tagName !== 'SPAN' ) return;
+                    if ( target.classList.contains("login-email-toggle") ) return;
+                    for ( let elem of target.parentElement.children) {
+                        if (elem.classList.contains("login-email-toggle")) {
+                            elem.classList.remove("login-email-toggle");
+                        }
+                    }
+                    target.classList.add("login-email-toggle");
+                    loginType = target.innerHTML;
+                    $("#signinBack").click();
+                    $('#email_id').val('');
+                    $('#mobile').val('');
+                    email_id = '';
+                    mobile = '';
+                    if ( loginType == 'Mobile') {
+                        $(".login #email_field").hide();
+                        $(".login #mobile_field").show();
+                        $("#mobile").focus();
+                        fetchMobileCode();
+                    } else if ( loginType == "Email") {
+                        $(".login #email_field").show();
+                        $(".login #mobile_field").hide();
+                        $("#email_id").focus();
+                    }
+
+                    $('.email_error,.password_error,.mobile_error').hide();
+                    allInput.removeClass("errorInput");
+                })
+
+                $('#email_id,#password,#org_password,#mobile').keypress(function(){
                     var keycode = (event.keyCode ? event.keyCode : event.which);
                     if(keycode == 13){//Enter key pressed
-                        if(event.currentTarget.id === 'email_id'){
+                        if(event.currentTarget.id === 'email_id' || event.currentTarget.id === 'mobile'){
                             $('#next').click();
                         }else if(event.currentTarget.id === 'password'){
                             $('#sign-in').click();
@@ -373,8 +472,43 @@
                         }
                     }
                 })
+
                 $(document).on('click','#next',function(e){
                     e.preventDefault();
+                    if (loginType == 'Mobile') {
+                        mobile = $('#mobile').val();
+                        if (!mobile) {
+                            $('.mobile_error').show().html("Mobile Field is Mandatory*");
+                            $('#mobile').addClass("errorInput");
+                            return;
+                        }
+                       // if (!validateMobile(mobile))  {return}
+
+                       $.ajax({
+                            type: 'GET',
+                            url: api_url+'/access/v1/fetchauthmode/',
+                            data : {user:mobile,mobile_extensions:country_code}, //checks email_id(user exist or not)
+                            success: function(data) {
+                                $("#password_field").show();
+                                $("#password").focus();
+                                $("#mobile,#code").attr("disabled",true).addClass("disabled")
+                                $("#next").hide();
+                                $(".sign-in").css("display","flex");
+                            },
+                            error:function(a,b,c){
+                                let msg = '';
+                                if(a && a.responseJSON && a.responseJSON.res_str){
+                                    msg = a.responseJSON.res_str;
+                                }else if(a && a.status){
+                                    msg = showErrorMsg(a.status);
+                                }
+                                $('.mobile_error').css("display","block").text(msg);
+                                $('#mobile').addClass("errorInput");
+                            }
+                        });
+                        return;
+                    }
+
                     email_id = $('#email_id').val();
                     if(!email_id){
                         $('.email_error').show().html("Email Field is Mandatory*");
@@ -386,7 +520,7 @@
 
                     $.ajax({
                         type: 'GET',
-                        url: 'https://v2-prep-api.happay.in/access/v1/fetchauthmode/?user=' + email_id, //checks email_id(user exist or not)
+                        url: api_url+'access/v1/fetchauthmode/?user=' + email_id, //checks email_id(user exist or not)
                         success: function(data) {
                             $("#password_field").show();
                             $("#password").focus();
@@ -410,11 +544,11 @@
                     e.preventDefault();
                     password = $('#password').val();
                     var login_data = {
-                        'user': email_id,
+                        'user': email_id || mobile,
                         'password': password
                     };
 
-                    if(email_id && !password){
+                    if(!password){
                         $('.password_error').show().html("Password Field is Mandatory*");
                         $('#password').addClass("errorInput");
                         return;
@@ -422,13 +556,13 @@
 
                     $.ajax({
                         type: "POST",
-                        url: 'https://v2-prep-api.happay.in/access/v1/login/',
+                        url: api_url+'access/v1/login/',
                         data: login_data,
                         success: function(data, textStatus, request) {
                                         $(".login").hide();
                                         //$("#next").hide();
                                         $(".profile").css("display","flex");
-                                        $(".profile .sub-sub-heading").text(email_id);
+                                        $(".profile .sub-sub-heading").text(email_id || (country_code+' '+ mobile));
                                         
                             if (request.getResponseHeader('HAPPAY-CID')) //checks user have one or multiple organization if only one(HAPPAY-CID will available else not)
                             {
@@ -454,12 +588,12 @@
                     e.preventDefault();
                     org_password = $('#org_password').val(); 
                     var login_data = {
-                        'user': email_id,
+                        'user': email_id || mobile,
                         'password': org_password,
                         'user_id': userid
                     };
 
-                    if(email_id && !org_password){
+                    if(!org_password){
                         $('.password_error').show().html("Org Password Field is Mandatory*");
                         $('#org_password').addClass("errorInput");
                         return;
@@ -467,7 +601,7 @@
 
                     $.ajax({
                         type: "POST",
-                        url: 'https://v2-prep-api.happay.in/access/v1/login/', //login API
+                        url: api_url+'access/v1/login/', //login API
                         data: login_data,
                         success: function(data, textStatus, request) {
                             $(".login").hide();
@@ -488,7 +622,7 @@
                     e.preventDefault();
                     $("#password_field").hide();
                     $("#org_pswd_field").hide();
-                    $("#email_id").attr("disabled", false).removeClass("disabled");
+                    $("#email_id,#mobile,#code").attr("disabled", false).removeClass("disabled");
                     $("#next").show();
                     $(".sign-in").hide();
                     $("#password").val("");
@@ -524,8 +658,19 @@
                     $('#password').val('');
                 })
                 allInput.on('input',function(){
-                    $('.email_error,.password_error').hide();
+                    $('.email_error,.password_error,.mobile_error').hide();
                     allInput.removeClass("errorInput");
+                })
+                $(document).on('input','#mobile',function x(event){
+                    let regexp = /\b\d{1,10}\b/g;
+                    let current = Number(event.target.value);
+                    if(regexp.test(current)){
+                        $('#mobile').val(event.target.value);
+                        x.previous = current;
+                        return;
+                    }
+                    $('#mobile').val(x.previous || '');
+                   
                 })
             });
             
@@ -539,7 +684,7 @@
                     }
                 return true;
             }
-            
+
             function select_orgs(profiles) { //to select organization
                 event.preventDefault();
                 var div, temp = '<div class="abc-container">';
@@ -563,10 +708,12 @@
                         $(".login").show();
                         $(".profile").hide();
                         $("#password_field").hide();
-                        $("#org_pswd_field").show(); 
+                        $("#org_pswd_field").show();
+                        $("#org_password").focus(); 
                         $("#profileBack").hide();
                         $(".org-button").css('display','flex');
                         $(".sign-in").hide();
+                        
                                 
                                 //organization password field
                     userid = $(this).attr("id");
