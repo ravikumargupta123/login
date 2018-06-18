@@ -399,10 +399,11 @@
             arr = [],
             countrycode = [],
             country_code = $('#code').val(),
-            api_url = 'https://v2-prep-api.happay.in/'
+            api_url = 'https://api-v2.happay.in/'
            
             $("#email_id").focus();
             $(document).ready(function(){
+                console.log()
                 $(document).on('change','#select',function(){
                     country_code = $('#select').val();
                     $('#code').val(country_code);
@@ -422,6 +423,7 @@
                                let option = new Option(item.country,item.country_code);
                                document.getElementById("select").appendChild(option);
                            }
+                           $('#select').get(0).value= '+91';
                         },
                         error:function(a,b,c){
                             console.error("country code fetching error");
@@ -486,8 +488,8 @@
 
                        $.ajax({
                             type: 'GET',
-                            url: api_url+'/access/v1/fetchauthmode/',
-                            data : {user:mobile,mobile_extensions:country_code}, //checks email_id(user exist or not)
+                            url: api_url+'access/v1/fetchauthmode/',
+                            data : {user:mobile,mobile_extension:country_code}, //checks email_id(user exist or not)
                             success: function(data) {
                                 $("#password_field").show();
                                 $("#password").focus();
